@@ -14,16 +14,16 @@ $userID = $_SESSION['UserID'];
 $sql = "SELECT Username, UserType FROM User WHERE UserID = '$userID'";
 $result = $conn->query($sql);
 
-// Fetch all relief information from the ReliefInformation table
-$sql = "SELECT ReliefID, Title, Description, DateGranted, Amount FROM ReliefInformation";
-$result = $conn->query($sql);
+// Fetch relief information added by the currently logged-in user
+$sqlRelief = "SELECT ReliefID, Title, Description, DateGranted, Amount, Status FROM ReliefInformation WHERE RehabInstituteID = '$userID'";
+$resultRelief = $conn->query($sqlRelief);
 
 // Handle relief information deletion
 if (isset($_GET['delete_relief'])) {
     $reliefIDToDelete = $_GET['delete_relief'];
     
     // Perform relief information deletion
-    $deleteSql = "DELETE FROM ReliefInformation WHERE ReliefID = '$reliefIDToDelete'";
+    $deleteSql = "DELETE FROM ReliefInformation WHERE ReliefID = '$reliefIDToDelete' AND RehabInstituteID = '$userID'";
     if ($conn->query($deleteSql) === TRUE) {
         header("Location: view_relief_information.php");
         exit();
@@ -50,12 +50,11 @@ if (isset($_GET['delete_relief'])) {
 
     <div class="container mt-3">
 
-
         <h2>Relief Information</h2>
 
         <?php
         // Display relief information records
-        if ($result->num_rows > 0) {
+        if ($resultRelief->num_rows > 0) {
             echo "<table class='table table-bordered'>
                     <thead>
                         <tr>
@@ -64,17 +63,19 @@ if (isset($_GET['delete_relief'])) {
                             <th>Description</th>
                             <th>Date Granted</th>
                             <th>Amount</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>";
-            while ($row = $result->fetch_assoc()) {
+            while ($row = $resultRelief->fetch_assoc()) {
                 echo "<tr>
                         <td>{$row['ReliefID']}</td>
                         <td>{$row['Title']}</td>
                         <td>{$row['Description']}</td>
                         <td>{$row['DateGranted']}</td>
                         <td>{$row['Amount']}</td>
+                        <td>{$row['Status']}</td>
                         <td>
                             <a href='edit_relief_information.php?relief_id={$row['ReliefID']}' class='btn btn-warning'>Edit</a>
                             <a href='view_relief_information.php?delete_relief={$row['ReliefID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this relief information?\")'>Delete</a>

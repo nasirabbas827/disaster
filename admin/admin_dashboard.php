@@ -10,7 +10,6 @@ if (!isset($_SESSION['AdminID'])) {
 
 $adminID = $_SESSION['AdminID'];
 $adminUsername = $_SESSION['AdminUsername'];
- 
 
 // Query to get total counts
 $sqlTotalGeneralUsers = "SELECT COUNT(*) AS total FROM user WHERE UserType = 'General User'";
@@ -32,6 +31,18 @@ $sqlTotalReliefInfo = "SELECT COUNT(*) AS total FROM reliefinformation";
 $resultTotalReliefInfo = $conn->query($sqlTotalReliefInfo);
 $rowTotalReliefInfo = $resultTotalReliefInfo->fetch_assoc();
 $totalReliefInfo = $rowTotalReliefInfo['total'];
+
+// Query to get counts of pending users
+$sqlPendingUsers = "SELECT COUNT(*) AS total FROM user WHERE  Status = 'Pending'";
+$resultPendingUsers = $conn->query($sqlPendingUsers);
+$rowPendingUsers = $resultPendingUsers->fetch_assoc();
+$totalPendingUsers = $rowPendingUsers['total'];
+
+// Query to get counts of pending relief information
+$sqlPendingReliefInfo = "SELECT COUNT(*) AS total FROM reliefinformation WHERE Status = 'Pending'";
+$resultPendingReliefInfo = $conn->query($sqlPendingReliefInfo);
+$rowPendingReliefInfo = $resultPendingReliefInfo->fetch_assoc();
+$totalPendingReliefInfo = $rowPendingReliefInfo['total'];
 
 // Close the database connection
 $conn->close();
@@ -84,11 +95,29 @@ $conn->close();
         </div>
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Total Relief Information</h5>
                         <p class="card-text"><?php echo $totalReliefInfo; ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Pending Users</h5>
+                        <p class="card-text"><?php echo $totalPendingUsers; ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Pending Relief Information</h5>
+                        <p class="card-text"><?php echo $totalPendingReliefInfo; ?></p>
                     </div>
                 </div>
             </div>

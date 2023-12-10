@@ -26,12 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    // Insert data into the User table
-    $sql = "INSERT INTO User (Username, Email, Password, ContactInfo, UserType, Address)
-            VALUES ('$username', '$email', '$password', '$contact', '$usertype', '$address')";
+    $sql = "INSERT INTO User (Username, Email, Password, ContactInfo, UserType, Address, Status)
+        VALUES ('$username', '$email', '$password', '$contact', '$usertype', '$address', 'Pending')";
 
     if ($conn->query($sql) === TRUE) {
-        $registration_result = "Registration successful!";
+        $registration_result = "Registration successful! Your account status is pending.";
     } else {
         $registration_result = "Error: " . $sql . "<br>" . $conn->error;
     }

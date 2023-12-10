@@ -32,8 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashedPassword = ($newPassword);
 
     // Insert new user into the User table
-    $insertSql = "INSERT INTO User (Username, Email, Password, ContactInfo, UserType, Address)
-                  VALUES ('$newUsername', '$newEmail', '$hashedPassword', '$newContact', '$newUsertype', '$newAddress')";
+    $insertSql = "INSERT INTO User (Username, Email, Password, ContactInfo, UserType, Address , Status)
+                  VALUES ('$newUsername', '$newEmail', '$hashedPassword', '$newContact', '$newUsertype', '$newAddress', 'Approved')";
 
     if ($conn->query($insertSql) === TRUE) {
         $addUserSuccess = "User added successfully!";

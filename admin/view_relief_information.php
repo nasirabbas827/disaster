@@ -12,14 +12,17 @@ if (!isset($_SESSION['AdminID'])) {
 $adminID = $_SESSION['AdminID'];
 $adminUsername = $_SESSION['AdminUsername'];
 
-// Fetch all relief information from the ReliefInformation table
-$sql = "SELECT ReliefID, Title, Description, DateGranted, Amount FROM ReliefInformation";
+// Fetch all relief information with corresponding rehab institute names and status
+$sql = "SELECT r.ReliefID, r.Title, r.Description, r.DateGranted, r.Amount, u.Username AS RehabInstituteName, u.Status
+        FROM ReliefInformation r
+        JOIN User u ON r.RehabInstituteID = u.UserID";
+
 $result = $conn->query($sql);
 
 // Handle relief information deletion
 if (isset($_GET['delete_relief'])) {
     $reliefIDToDelete = $_GET['delete_relief'];
-    
+
     // Perform relief information deletion
     $deleteSql = "DELETE FROM ReliefInformation WHERE ReliefID = '$reliefIDToDelete'";
     if ($conn->query($deleteSql) === TRUE) {
@@ -33,6 +36,7 @@ if (isset($_GET['delete_relief'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,12 +46,12 @@ if (isset($_GET['delete_relief'])) {
     <link rel="stylesheet" href="./css/style.css">
 
 </head>
+
 <body>
 
     <?php include('navbar.php'); ?>
 
     <div class="container mt-3">
-
 
         <h2>Relief Information</h2>
 
@@ -62,6 +66,8 @@ if (isset($_GET['delete_relief'])) {
                             <th>Description</th>
                             <th>Date Granted</th>
                             <th>Amount</th>
+                            <th>Rehab Institute</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -73,6 +79,8 @@ if (isset($_GET['delete_relief'])) {
                         <td>{$row['Description']}</td>
                         <td>{$row['DateGranted']}</td>
                         <td>{$row['Amount']}</td>
+                        <td>{$row['RehabInstituteName']}</td>
+                        <td>{$row['Status']}</td>
                         <td>
                             <a href='edit_relief_information.php?relief_id={$row['ReliefID']}' class='btn btn-warning'>Edit</a>
                             <a href='view_relief_information.php?delete_relief={$row['ReliefID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this relief information?\")'>Delete</a>
@@ -97,4 +105,5 @@ if (isset($_GET['delete_relief'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
+
 </html>

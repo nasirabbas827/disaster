@@ -70,14 +70,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
-
 </head>
 <body>
 
     <?php include('navbar.php'); ?>
 
     <div class="container mt-3">
-
 
         <h2>Edit Relief Information</h2>
 
@@ -92,16 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class='form-group'>
                     <label for='description'>Description:</label>
                     <textarea class='form-control' id='description' name='description' rows='4' required>$description</textarea>
-                </div>
-
-                <div class='form-group'>
-                    <label for='date_granted'>Date Granted:</label>
-                    <input type='date' class='form-control' id='date_granted' name='date_granted' value='$dateGranted' required>
-                </div>
-
-                <div class='form-group'>
-                    <label for='amount'>Amount:</label>
-                    <input type='number' class='form-control' id='amount' name='amount' step='0.01' value='$amount' required>
                 </div>
 
                 <button type='submit' class='btn btn-primary'>Update</button>
@@ -121,4 +109,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
-

@@ -3,8 +3,11 @@ session_start();
 
 include('config.php');
 
-// Fetch relief information from the ReliefInformation table
-$sql = "SELECT * FROM ReliefInformation";
+// Fetch relief information from the ReliefInformation table with status "Granted" and associated username
+$sql = "SELECT r.*, u.Username 
+        FROM ReliefInformation r
+        JOIN User u ON r.RehabInstituteID = u.UserID
+        WHERE r.Status = 'Granted'";
 $result = $conn->query($sql);
 ?>
 
@@ -42,6 +45,7 @@ $result = $conn->query($sql);
                                     <p class='card-text'>{$row['Description']}</p>
                                     <p class='card-text'><strong>Date Granted:</strong> {$row['DateGranted']}</p>
                                     <p class='card-text'><strong>Amount:</strong> {$row['Amount']}</p>
+                                    <p class='card-text'><strong>Rehablitiation Institute Name::</strong> {$row['Username']}</p>
                                 </div>
                             </div>
                         </div>";
@@ -67,4 +71,3 @@ $result = $conn->query($sql);
 </body>
 
 </html>
-

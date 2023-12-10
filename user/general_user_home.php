@@ -23,8 +23,14 @@ if ($result->num_rows == 1) {
     $username = "Error";
     $userType = "Error";
 }
- // Fetch three relief information records
-$sqlRelief = "SELECT * FROM reliefinformation LIMIT 3";
+
+// Fetch three relief information records with status "Granted" and associated username
+$sqlRelief = "SELECT r.*, u.Username 
+              FROM reliefinformation r
+              JOIN user u ON r.RehabInstituteID = u.UserID
+              WHERE r.Status = 'Granted'
+              LIMIT 3";
+
 $resultRelief = $conn->query($sqlRelief);
 
 // Fetch three disaster information records
@@ -45,7 +51,7 @@ $resultMessages = $conn->query($sqlMessages);
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
@@ -66,6 +72,7 @@ $resultMessages = $conn->query($sqlMessages);
                                 <p class='card-text'>{$rowRelief['Description']}</p>
                                 <p class='card-text'><strong>Date Granted:</strong> {$rowRelief['DateGranted']}</p>
                                 <p class='card-text'><strong>Amount:</strong> {$rowRelief['Amount']}</p>
+                                <p class='card-text'><strong>Rehablitiation Institute Name:</strong> {$rowRelief['Username']}</p>
                             </div>
                         </div>
                     </div>";

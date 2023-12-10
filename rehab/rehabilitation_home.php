@@ -29,9 +29,7 @@ $sqlDisasterCount = "SELECT COUNT(*) as totalDisasters FROM disasterinformation"
 $resultDisasterCount = $conn->query($sqlDisasterCount);
 $totalDisasters = $resultDisasterCount->fetch_assoc()['totalDisasters'];
 
-$sqlReliefCount = "SELECT COUNT(*) as totalReliefs FROM reliefinformation";
-$resultReliefCount = $conn->query($sqlReliefCount);
-$totalReliefs = $resultReliefCount->fetch_assoc()['totalReliefs'];
+ 
 
 $sqlMessageCount = "SELECT COUNT(*) as totalMessages FROM publicmessage";
 $resultMessageCount = $conn->query($sqlMessageCount);
@@ -66,14 +64,7 @@ $totalMessages = $resultMessageCount->fetch_assoc()['totalMessages'];
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Relief Information</h5>
-                        <p class="card-text"><?php echo $totalReliefs; ?></p>
-                    </div>
-                </div>
-            </div>
+             
 
             <div class="col-md-4">
                 <div class="card">

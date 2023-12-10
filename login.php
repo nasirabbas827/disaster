@@ -12,33 +12,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var($email, FILTER_SANITIZE_EMAIL);
     $password = htmlspecialchars($password);
 
- 
     $hashedPassword = ($password);
 
-    // Check user credentials in the database
-    $sql = "SELECT UserID, UserType FROM User WHERE Email = '$email' AND Password = '$hashedPassword'";
+    // Check user credentials and status in the database
+    $sql = "SELECT UserID, UserType, Status FROM User WHERE Email = '$email' AND Password = '$hashedPassword'";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
-        // User is found, set session variables and redirect based on user type
+        // User is found, check user status
         $row = $result->fetch_assoc();
-        $_SESSION['UserID'] = $row['UserID'];
-        $_SESSION['UserType'] = $row['UserType'];
+        $userStatus = $row['Status'];
 
-        if ($_SESSION['UserType'] == 'Rehabilitation Institutes') {
-            header("Location: ./rehab/rehabilitation_home.php");
-        } elseif ($_SESSION['UserType'] == 'General User') {
-            header("Location: ./user/general_user_home.php");
+        if ($userStatus == 'Approved') {
+            // Set session variables and redirect based on user type
+            $_SESSION['UserID'] = $row['UserID'];
+            $_SESSION['UserType'] = $row['UserType'];
+
+            if ($_SESSION['UserType'] == 'Rehabilitation Institutes') {
+                header("Location: ./rehab/rehabilitation_home.php");
+            } elseif ($_SESSION['UserType'] == 'General User') {
+                header("Location: ./user/general_user_home.php");
+            } else {
+                echo "Invalid User";
+            }
+            exit();
         } else {
-            echo "Invalid User";
+            $login_error = "Your account is not approved. Please contact the administrator.";
         }
-        exit();
     } else {
         $login_error = "Invalid email or password";
     }
 }
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

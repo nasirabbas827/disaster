@@ -25,6 +25,7 @@ if (isset($_GET['user_id'])) {
         $contact = $user['ContactInfo'];
         $usertype = $user['UserType'];
         $address = $user['Address'];
+        $status = $user['Status']; // Fetch the status
     } else {
         // Handle error if user not found
         header("Location: manage_users.php");
@@ -43,14 +44,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $updatedContact = $_POST['contact'];
     $updatedUsertype = $_POST['usertype'];
     $updatedAddress = $_POST['address'];
+    $updatedStatus = $_POST['status']; // Added status update
 
-    // Update user details in the User table
+    // Update user details and status in the User table
     $updateSql = "UPDATE User
                   SET Username = '$updatedUsername',
                       Email = '$updatedEmail',
                       ContactInfo = '$updatedContact',
                       UserType = '$updatedUsertype',
-                      Address = '$updatedAddress'
+                      Address = '$updatedAddress',
+                      Status = '$updatedStatus'  -- Update status
                   WHERE UserID = '$userIDToEdit'";
 
     if ($conn->query($updateSql) === TRUE) {
@@ -120,6 +123,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class='form-group'>
                     <label for='address'>Address:</label>
                     <textarea class='form-control' id='address' name='address' rows='4' required>$address</textarea>
+                </div>
+
+                <div class='form-group'>
+                    <label for='status'>Status:</label>
+                    <select class='form-control' id='status' name='status' required>
+                        <option value='Pending' " . ($status == 'Pending' ? 'selected' : '') . ">Pending</option>
+                        <option value='Approved' " . ($status == 'Approved' ? 'selected' : '') . ">Approved</option>
+                        <option value='Rejected' " . ($status == 'Rejected' ? 'selected' : '') . ">Rejected</option>
+                    </select>
                 </div>
 
                 <button type='submit' class='btn btn-primary'>Update</button>

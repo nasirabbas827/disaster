@@ -13,7 +13,7 @@ $adminID = $_SESSION['AdminID'];
 $adminUsername = $_SESSION['AdminUsername'];
 
 // Fetch all users from the User table
-$sql = "SELECT UserID, Username, Email, ContactInfo, UserType, Address FROM User";
+$sql = "SELECT UserID, Username, Email, ContactInfo, UserType, Status,  Address FROM User";
 $result = $conn->query($sql);
 
 // Handle user deletion
@@ -62,6 +62,7 @@ if (isset($_GET['delete_user'])) {
                             <th>Contact Info</th>
                             <th>User Type</th>
                             <th>Address</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -74,6 +75,7 @@ if (isset($_GET['delete_user'])) {
                         <td>{$row['ContactInfo']}</td>
                         <td>{$row['UserType']}</td>
                         <td>{$row['Address']}</td>
+                        <td>{$row['Status']}</td>
                         <td>
                             <a href='edit_user.php?user_id={$row['UserID']}' class='btn btn-warning'>Edit</a>
                             <a href='manage_users.php?delete_user={$row['UserID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this user?\")'>Delete</a>

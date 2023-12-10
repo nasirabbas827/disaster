@@ -12,22 +12,28 @@ if (!isset($_SESSION['AdminID'])) {
 $adminID = $_SESSION['AdminID'];
 $adminUsername = $_SESSION['AdminUsername'];
 
+// Fetch approved Rehabilitation Institutes for dropdown
+$getRehabSql = "SELECT UserID, Username FROM User WHERE UserType = 'Rehabilitation Institutes' AND Status = 'Approved'";
+$rehabResult = $conn->query($getRehabSql);
+
 // Handle relief information addition
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $reliefTitle = $_POST['title'];
     $reliefDescription = $_POST['description'];
     $reliefDateGranted = $_POST['date_granted'];
     $reliefAmount = $_POST['amount'];
+    $rehabInstituteID = $_POST['rehab_institute']; // Added rehab_institute
 
     // Validate and sanitize inputs (add more validation as needed)
     $reliefTitle = htmlspecialchars($reliefTitle);
     $reliefDescription = htmlspecialchars($reliefDescription);
     $reliefDateGranted = htmlspecialchars($reliefDateGranted);
     $reliefAmount = htmlspecialchars($reliefAmount);
+    $rehabInstituteID = htmlspecialchars($rehabInstituteID);
 
-    // Insert new relief information into the ReliefInformation table
-    $insertSql = "INSERT INTO ReliefInformation (Title, Description, DateGranted, Amount)
-                  VALUES ('$reliefTitle', '$reliefDescription', '$reliefDateGranted', '$reliefAmount')";
+    // Insert new relief information into the ReliefInformation table with Granted status
+    $insertSql = "INSERT INTO ReliefInformation (Title, Description, DateGranted, Amount, RehabInstituteID, Status)
+                  VALUES ('$reliefTitle', '$reliefDescription', '$reliefDateGranted', '$reliefAmount', '$rehabInstituteID', 'Granted')";
 
     if ($conn->query($insertSql) === TRUE) {
         $addReliefSuccess = "Relief information added successfully!";
@@ -46,13 +52,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
-
 </head>
 <body>
 
     <?php include('navbar.php'); ?>
 
-    <div class="container mt-3">
+    <div class="container mt-3 mb-5">
 
         <h2>Add Relief Information</h2>
 
@@ -88,6 +93,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label for="amount">Amount:</label>
                 <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="rehab_institute">Rehabilitation Institute:</label>
+                <select class="form-control" id="rehab_institute" name="rehab_institute" required>
+                    <?php
+                    // Display approved Rehabilitation Institutes in the dropdown
+                    while ($row = $rehabResult->fetch_assoc()) {
+                        echo "<option value='{$row['UserID']}'>{$row['Username']}</option>";
+                    }
+                    ?>
+                </select>
             </div>
 
             <button type="submit" class="btn btn-primary">Add Relief Information</button>

@@ -15,7 +15,10 @@ $adminUsername = $_SESSION['AdminUsername'];
 // Fetch relief information details based on relief_id from the URL parameter
 if (isset($_GET['relief_id'])) {
     $reliefIDToEdit = $_GET['relief_id'];
-    $editSql = "SELECT * FROM ReliefInformation WHERE ReliefID = '$reliefIDToEdit'";
+    $editSql = "SELECT r.ReliefID, r.Title, r.Description, r.DateGranted, r.Amount, r.RehabInstituteID, u.Username AS RehabInstituteName, r.Status AS RehabInstituteStatus
+                FROM ReliefInformation r
+                INNER JOIN User u ON r.RehabInstituteID = u.UserID
+                WHERE r.ReliefID = '$reliefIDToEdit'";
     $result = $conn->query($editSql);
 
     if ($result->num_rows == 1) {
@@ -24,6 +27,9 @@ if (isset($_GET['relief_id'])) {
         $description = $relief['Description'];
         $dateGranted = $relief['DateGranted'];
         $amount = $relief['Amount'];
+        $rehabInstituteID = $relief['RehabInstituteID'];
+        $rehabInstituteName = $relief['RehabInstituteName'];
+        $rehabInstituteStatus = $relief['RehabInstituteStatus'];
     } else {
         // Handle error if relief information not found
         header("Location: view_relief_information.php");
@@ -41,13 +47,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $updatedDescription = $_POST['description'];
     $updatedDateGranted = $_POST['date_granted'];
     $updatedAmount = $_POST['amount'];
+    $updatedRehabInstituteID = $_POST['rehab_institute_id'];
+    $updatedStatus = $_POST['status'];
 
     // Update relief information details in the ReliefInformation table
     $updateSql = "UPDATE ReliefInformation
                   SET Title = '$updatedTitle',
                       Description = '$updatedDescription',
                       DateGranted = '$updatedDateGranted',
-                      Amount = '$updatedAmount'
+                      Amount = '$updatedAmount',
+                      RehabInstituteID = '$updatedRehabInstituteID',
+                      Status = '$updatedStatus'
                   WHERE ReliefID = '$reliefIDToEdit'";
 
     if ($conn->query($updateSql) === TRUE) {
@@ -68,15 +78,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
-
 </head>
 <body>
 
     <?php include('navbar.php'); ?>
 
     <div class="container mt-3">
-
-
         <h2>Edit Relief Information</h2>
 
         <?php
@@ -102,8 +109,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type='number' class='form-control' id='amount' name='amount' step='0.01' value='$amount' required>
                 </div>
 
-                <button type='submit' class='btn btn-primary'>Update</button>
-            </form>";
+                <div class='form-group'>
+                    <label for='rehab_institute_id'>Rehab Institute:</label>
+                    <select class='form-control' id='rehab_institute_id' name='rehab_institute_id' required>
+                        <option value='$rehabInstituteID'>$rehabInstituteName</option>";
+                        
+        // Fetch and display all rehab institutes from the User table here
+        $rehabInstituteSql = "SELECT UserID, Username FROM User WHERE UserType = 'Rehabilitation Institutes' AND Status = 'Approved'";
+        $rehabInstituteResult = $conn->query($rehabInstituteSql);
+
+        while ($row = $rehabInstituteResult->fetch_assoc()) {
+            echo "<option value='{$row['UserID']}'>{$row['Username']}</option>";
+        }
+
+        echo "</select>
+              </div>
+
+              <div class='form-group'>
+                    <label for='status'>Status:</label>
+                    <select class='form-control' id='status' name='status' required>
+                        <option value='Approved' " . ($rehabInstituteStatus == 'Approved' ? 'selected' : '') . ">Approved</option>
+                        <option value='Pending' " . ($rehabInstituteStatus == 'Pending' ? 'selected' : '') . ">Pending</option>
+                        <option value='Rejected' " . ($rehabInstituteStatus == 'Rejected' ? 'selected' : '') . ">Rejected</option>
+                        <option value='Granted' " . ($rehabInstituteStatus == 'Granted' ? 'selected' : '') . ">Granted</option>
+                        <option value='Cancel' " . ($rehabInstituteStatus == 'Cancel' ? 'selected' : '') . ">Cancel</option>
+                    </select>
+              </div>
+
+              <button type='submit' class='btn btn-primary'>Update</button>
+          </form>";
 
         // Display update error if any
         if (isset($updateError)) {
@@ -116,7 +150,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 </html>
-

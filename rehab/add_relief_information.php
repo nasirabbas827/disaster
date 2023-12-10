@@ -13,23 +13,26 @@ if (!isset($_SESSION['UserID']) || $_SESSION['UserType'] !== 'Rehabilitation Ins
 $userID = $_SESSION['UserID'];
 $sql = "SELECT Username, UserType FROM User WHERE UserID = '$userID'";
 $result = $conn->query($sql);
+$user = $result->fetch_assoc();
 
 // Handle relief information addition
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $reliefTitle = $_POST['title'];
     $reliefDescription = $_POST['description'];
-    $reliefDateGranted = $_POST['date_granted'];
-    $reliefAmount = $_POST['amount'];
 
     // Validate and sanitize inputs (add more validation as needed)
     $reliefTitle = htmlspecialchars($reliefTitle);
     $reliefDescription = htmlspecialchars($reliefDescription);
-    $reliefDateGranted = htmlspecialchars($reliefDateGranted);
-    $reliefAmount = htmlspecialchars($reliefAmount);
+
+    // Set the logged-in user's ID as RehabInstituteID
+    $rehabInstituteID = $userID;
+
+    // Set the Status as "Pending"
+    $status = "Pending";
 
     // Insert new relief information into the ReliefInformation table
-    $insertSql = "INSERT INTO ReliefInformation (Title, Description, DateGranted, Amount)
-                  VALUES ('$reliefTitle', '$reliefDescription', '$reliefDateGranted', '$reliefAmount')";
+    $insertSql = "INSERT INTO ReliefInformation (Title, Description, RehabInstituteID, Status)
+                  VALUES ('$reliefTitle', '$reliefDescription', '$rehabInstituteID', '$status')";
 
     if ($conn->query($insertSql) === TRUE) {
         $addReliefSuccess = "Relief information added successfully!";
@@ -48,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
-
 </head>
 <body>
 
@@ -80,16 +82,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label for="description">Description:</label>
                 <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="date_granted">Date Granted:</label>
-                <input type="date" class="form-control" id="date_granted" name="date_granted" required>
-            </div>
-
-            <div class="form-group">
-                <label for="amount">Amount:</label>
-                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Add Relief Information</button>
