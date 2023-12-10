@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 09, 2023 at 07:54 PM
+-- Generation Time: Dec 10, 2023 at 06:20 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -91,17 +91,20 @@ INSERT INTO `publicmessage` (`MessageID`, `InstituteID`, `Title`, `Message`, `Da
 CREATE TABLE `reliefinformation` (
   `ReliefID` int(11) NOT NULL,
   `Title` varchar(255) NOT NULL,
-  `Description` text DEFAULT NULL,
-  `DateGranted` date DEFAULT NULL,
-  `Amount` decimal(10,2) NOT NULL
+  `Description` text NOT NULL,
+  `DateGranted` date NOT NULL,
+  `Amount` decimal(10,2) NOT NULL,
+  `RehabInstituteID` int(11) NOT NULL,
+  `Status` enum('Pending','Rejected','Approved','Granted') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reliefinformation`
 --
 
-INSERT INTO `reliefinformation` (`ReliefID`, `Title`, `Description`, `DateGranted`, `Amount`) VALUES
-(1, 'NGO Camp Relief infor', 'Lahore', '2023-12-09', 30000.00);
+INSERT INTO `reliefinformation` (`ReliefID`, `Title`, `Description`, `DateGranted`, `Amount`, `RehabInstituteID`, `Status`) VALUES
+(1, 'sdfd', 'adfs', '2024-01-05', 300.00, 4, 'Granted'),
+(2, 'I want Relief ', 'ddddddd', '0000-00-00', 0.00, 1, 'Pending');
 
 -- --------------------------------------------------------
 
@@ -116,17 +119,19 @@ CREATE TABLE `user` (
   `Password` varchar(255) NOT NULL,
   `ContactInfo` varchar(255) NOT NULL,
   `UserType` enum('General User','Rehabilitation Institutes') NOT NULL,
-  `Address` text NOT NULL
+  `Address` text NOT NULL,
+  `Status` varchar(20) NOT NULL DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`UserID`, `Username`, `Email`, `Password`, `ContactInfo`, `UserType`, `Address`) VALUES
-(1, 'Nasir12', 'nasiryt.827@gmail.com', '123', '6852316845', 'Rehabilitation Institutes', 'Multan'),
-(2, 'Nasir123', 'nasiryt@gmail.com', '123', '685231684566', 'General User', 'Lahore'),
-(3, 'VUBWN', 'VUBWN@gmail.com', '123', '23332132', 'General User', 'dfg');
+INSERT INTO `user` (`UserID`, `Username`, `Email`, `Password`, `ContactInfo`, `UserType`, `Address`, `Status`) VALUES
+(1, 'Nasir12', 'nasiryt.827@gmail.com', '123', '6852316845', 'Rehabilitation Institutes', 'Multan', 'Approved'),
+(2, 'Nasir123', 'nasiryt@gmail.com', '123', '685231684566', 'General User', 'Lahore', 'Approved'),
+(3, 'VUBWN', 'VUBWN@gmail.com', '123', '23332132', 'General User', 'dfg', 'Approved'),
+(4, 'New USer', 'new@gmail.com', '123', '651363', 'Rehabilitation Institutes', '3ertdf', 'Approved');
 
 --
 -- Indexes for dumped tables
@@ -155,7 +160,8 @@ ALTER TABLE `publicmessage`
 -- Indexes for table `reliefinformation`
 --
 ALTER TABLE `reliefinformation`
-  ADD PRIMARY KEY (`ReliefID`);
+  ADD PRIMARY KEY (`ReliefID`),
+  ADD KEY `RehabInstituteID` (`RehabInstituteID`);
 
 --
 -- Indexes for table `user`
@@ -189,13 +195,13 @@ ALTER TABLE `publicmessage`
 -- AUTO_INCREMENT for table `reliefinformation`
 --
 ALTER TABLE `reliefinformation`
-  MODIFY `ReliefID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ReliefID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -206,6 +212,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `publicmessage`
   ADD CONSTRAINT `publicmessage_ibfk_1` FOREIGN KEY (`InstituteID`) REFERENCES `user` (`UserID`);
+
+--
+-- Constraints for table `reliefinformation`
+--
+ALTER TABLE `reliefinformation`
+  ADD CONSTRAINT `reliefinformation_ibfk_1` FOREIGN KEY (`RehabInstituteID`) REFERENCES `user` (`UserID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
