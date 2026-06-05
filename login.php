@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashedPassword = ($password);
 
     // Check user credentials and status in the database
-    $sql = "SELECT UserID, UserType, Status FROM User WHERE Email = '$email' AND Password = '$hashedPassword'";
+    $sql = "SELECT UserID, UserType, Status FROM User WHERE Email = '$email' AND Password = "YOUR_OWN_API_KEY"";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
