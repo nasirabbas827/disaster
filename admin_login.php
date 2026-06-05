@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashedPassword = ($admin_password);
 
     // Check admin credentials in the database
-    $sql = "SELECT AdminID, AdminUsername FROM admin WHERE AdminUsername = '$admin_username' AND AdminPassword = '$hashedPassword'";
+    $sql = "SELECT AdminID, AdminUsername FROM admin WHERE AdminUsername = '$admin_username' AND AdminPassword = "YOUR_OWN_API_KEY"";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
